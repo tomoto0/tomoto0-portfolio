@@ -28,8 +28,14 @@
 - [x] tomoto0 の全公開リポジトリ情報を収集
 - [x] ProjectDetailModal コンポーネントを実装
 - [x] Home.tsx を改良し、ボタンテキストを変更
-- [x] 改良版ポートフォリオサイトを完成
+- [x- [x] 改良版ポートフォリオサイトを完成
 
+## 追加修正作業
+- [x] GitHub API から各リポジトリの website URL 情報を収集
+- [x] APP_LOGO を tomoto0 の GitHub アバター画像 URL に設定
+- [x] プロジェクトデータに website URL を追加
+- [x] ProjectDetailModal を改良（website URL リンク表示）
+- [x] 改良版ポートフォリオを完成
 ## 掲載プロジェクト（9選）
 1. AI Speech Processor - TypeScript
 2. AI Transcribe App - TypeScript

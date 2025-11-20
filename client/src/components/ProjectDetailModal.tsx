@@ -6,6 +6,7 @@ interface Project {
   description: string;
   language: string;
   url: string;
+  homepage: string | null;
   techStack: string[];
   features: string[];
 }
@@ -103,15 +104,17 @@ export default function ProjectDetailModal({
               <Github className="w-4 h-4" />
               View on GitHub
             </a>
-            <a
-              href={project.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 border-2 border-slate-300 text-slate-900 rounded-lg font-medium hover:border-rose-500 hover:text-rose-600 transition"
-            >
-              <ExternalLink className="w-4 h-4" />
-              Open Repository
-            </a>
+            {project.homepage && (
+              <a
+                href={project.homepage}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 border-2 border-rose-300 text-rose-600 rounded-lg font-medium hover:bg-rose-50 transition"
+              >
+                <ExternalLink className="w-4 h-4" />
+                Visit Website
+              </a>
+            )}
           </div>
         </div>
       </DialogContent>

@@ -10,6 +10,7 @@ interface Project {
   description: string;
   language: string;
   url: string;
+  homepage: string | null;
   techStack: string[];
   features: string[];
 }
