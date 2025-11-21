@@ -36,6 +36,10 @@
 - [x] プロジェクトデータに website URL を追加
 - [x] ProjectDetailModal を改良（website URL リンク表示）
 - [x] 改良版ポートフォリオを完成
+
+## エラー修正作業
+- [x] DialogContent の ref エラーを forwardRef で修正
+- [x] GitHub アバター画像をローカル画像で正しく表示
 ## 掲載プロジェクト（9選）
 1. AI Speech Processor - TypeScript
 2. AI Transcribe App - TypeScript
