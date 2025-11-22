@@ -7,6 +7,8 @@ interface Project {
   language: string;
   url: string;
   homepage: string | null;
+  stars: number;
+  forks: number;
   techStack: string[];
   features: string[];
 }

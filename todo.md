@@ -40,6 +40,11 @@
 ## エラー修正作業
 - [x] DialogContent の ref エラーを forwardRef で修正
 - [x] GitHub アバター画像をローカル画像で正しく表示
+
+## 機能拡張作業
+- [x] アバター画像を添付画像に差し替え
+- [x] プロジェクトカードにスター数・フォーク数を表示
+- [x] 最新プロジェクト（economics-hypothesis-generator など）を掲載
 ## 掲載プロジェクト（9選）
 1. AI Speech Processor - TypeScript
 2. AI Transcribe App - TypeScript
