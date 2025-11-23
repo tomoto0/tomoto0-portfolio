@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Heart, Github, Mail, ExternalLink, Star, GitFork } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { APP_LOGO, APP_TITLE } from "@/const";
 import { projects } from "@/data/projects";
 import ProjectDetailModal from "@/components/ProjectDetailModal";
+import ProjectFilterBar from "@/components/ProjectFilterBar";
 
 interface Project {
   name: string;
@@ -20,10 +21,40 @@ interface Project {
 export default function Home() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [filterKeyword, setFilterKeyword] = useState("");
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+
+  // ユニークな言語リストを取得
+  const uniqueLanguages = useMemo(() => {
+    const langs = new Set(projects.map((p) => p.language).filter(Boolean));
+    return Array.from(langs).sort();
+  }, []);
+
+  // フィルタリング処理
+  const filteredProjects = useMemo(() => {
+    return projects.filter((project) => {
+      // キーワード検索
+      const keywordMatch =
+        filterKeyword === "" ||
+        project.name.toLowerCase().includes(filterKeyword.toLowerCase()) ||
+        project.description.toLowerCase().includes(filterKeyword.toLowerCase());
+
+      // 言語フィルタ
+      const languageMatch =
+        selectedLanguages.length === 0 || selectedLanguages.includes(project.language);
+
+      return keywordMatch && languageMatch;
+    });
+  }, [filterKeyword, selectedLanguages]);
 
   const handleProjectClick = (project: Project) => {
     setSelectedProject(project);
     setIsModalOpen(true);
+  };
+
+  const handleFilterChange = (filters: { keyword: string; languages: string[] }) => {
+    setFilterKeyword(filters.keyword);
+    setSelectedLanguages(filters.languages);
   };
 
   return (
@@ -114,11 +145,27 @@ export default function Home() {
       {/* Projects Section */}
       <section id="projects" className="max-w-6xl mx-auto px-6 py-20 border-t border-slate-200/50">
         <h2 className="text-4xl font-bold text-slate-900 mb-4">Featured Projects</h2>
-        <p className="text-slate-600 mb-12">
+        <p className="text-slate-600 mb-8">
           Explore {projects.length} public repositories showcasing my work in AI, web development, and economic research.
         </p>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((project) => (
+        <ProjectFilterBar languages={uniqueLanguages} onFilterChange={handleFilterChange} />
+        {filteredProjects.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-slate-600 text-lg">No projects match your search criteria.</p>
+            <button
+              onClick={() => handleFilterChange({ keyword: "", languages: [] })}
+              className="mt-4 px-4 py-2 text-rose-600 hover:text-rose-800 font-medium transition"
+            >
+              Clear filters
+            </button>
+          </div>
+        ) : (
+          <>
+            <p className="text-slate-500 text-sm mb-6">
+              Showing {filteredProjects.length} of {projects.length} projects
+            </p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredProjects.map((project) => (
             <button
               key={project.name}
               onClick={() => handleProjectClick(project)}
@@ -142,9 +189,11 @@ export default function Home() {
                   <span>{project.forks}</span>
                 </div>
               </div>
-            </button>
-          ))}
-        </div>
+                </button>
+            ))};
+            </div>
+          </>
+        )}
       </section>
 
       {/* Contact Section */}
@@ -197,11 +246,13 @@ export default function Home() {
       </footer>
 
       {/* Project Detail Modal */}
-      <ProjectDetailModal
-        project={selectedProject}
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
+      {selectedProject && (
+        <ProjectDetailModal
+          project={selectedProject}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

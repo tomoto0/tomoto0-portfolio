@@ -45,6 +45,7 @@
 - [x] アバター画像を添付画像に差し替え
 - [x] プロジェクトカードにスター数・フォーク数を表示
 - [x] 最新プロジェクト（economics-hypothesis-generator など）を掲載
+- [x] 検索・フィルタリング機能を完成
 ## 掲載プロジェクト（9選）
 1. AI Speech Processor - TypeScript
 2. AI Transcribe App - TypeScript
@@ -55,3 +56,9 @@
 7. IELTS Asteroid Game - JavaScript
 8. Japan Economic Dashboard - JavaScript
 9. Economics Research Platform - HTML
+
+## 検索・フィルタリング機能実装
+- [x] ProjectFilterBar コンポーネントを作成（言語フィルタ、キーワード検索）
+- [x] Home.tsx でフィルタリング状況を管理
+- [x] フィルタリング機能をプロジェクト表示に統合
+- [x] 検索・フィルタリング機能のテストと検証
