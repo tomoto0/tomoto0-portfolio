@@ -3,8 +3,11 @@ import { Heart, Github, Mail, ExternalLink, Star, GitFork } from "lucide-react";
 import { useState, useMemo } from "react";
 import { APP_LOGO, APP_TITLE } from "@/const";
 import { projects } from "@/data/projects";
+import { blogPosts, BlogPost } from "@/data/blog";
 import ProjectDetailModal from "@/components/ProjectDetailModal";
 import ProjectFilterBar from "@/components/ProjectFilterBar";
+import BlogCard from "@/components/BlogCard";
+import BlogDetailModal from "@/components/BlogDetailModal";
 
 interface Project {
   name: string;
@@ -23,6 +26,8 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filterKeyword, setFilterKeyword] = useState("");
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+  const [selectedBlogPost, setSelectedBlogPost] = useState<BlogPost | null>(null);
+  const [isBlogModalOpen, setIsBlogModalOpen] = useState(false);
 
   // ユニークな言語リストを取得
   const uniqueLanguages = useMemo(() => {
@@ -60,84 +65,88 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/50 shadow-sm">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center">
-              <Heart className="w-4 h-4 text-white fill-white" />
-            </div>
-            <span className="font-semibold text-slate-900">Tomoto</span>
-          </div>
-          <div className="flex gap-6 items-center">
-            <a href="#about" className="text-sm text-slate-600 hover:text-rose-600 transition">About</a>
-            <a href="#projects" className="text-sm text-slate-600 hover:text-rose-600 transition">Projects</a>
-            <a href="#contact" className="text-sm text-slate-600 hover:text-rose-600 transition">Contact</a>
-          </div>
+      <nav className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <img src={APP_LOGO} alt={APP_TITLE} className="w-10 h-10 rounded-full" />
+          <span className="text-xl font-bold text-slate-900">{APP_TITLE}</span>
+        </div>
+        <div className="flex gap-8 text-slate-600">
+          <a href="#projects" className="hover:text-slate-900 transition">
+            Projects
+          </a>
+          <a href="#blog" className="hover:text-slate-900 transition">
+            Blog
+          </a>
+          <a href="#contact" className="hover:text-slate-900 transition">
+            Contact
+          </a>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="max-w-6xl mx-auto px-6 py-20 md:py-32">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <h1 className="text-5xl md:text-6xl font-bold text-slate-900 mb-4 leading-tight">
-              Hello, I'm <span className="bg-gradient-to-r from-rose-500 to-pink-600 bg-clip-text text-transparent">Tomoto</span>
-            </h1>
-            <p className="text-lg text-slate-600 mb-8 leading-relaxed">
-              PhD in Economics at University of Sussex. Passionate about building AI-powered tools for research, data analysis, and web development. I combine economic research expertise with modern web technologies and cutting-edge AI.
-            </p>
-            <div className="flex gap-4">
-              <a href="#projects" className="px-6 py-3 bg-gradient-to-r from-rose-500 to-pink-600 text-white rounded-lg font-medium hover:shadow-lg hover:scale-105 transition">
-                View My Work
-              </a>
-              <a href="#contact" className="px-6 py-3 border-2 border-slate-300 text-slate-900 rounded-lg font-medium hover:border-rose-500 hover:text-rose-600 transition">
-                Get in Touch
-              </a>
-            </div>
-          </div>
-          <div className="flex justify-center">
-            <div className="w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden border-4 border-rose-200 shadow-2xl">
-              <img src={APP_LOGO} alt="Tomoto" className="w-full h-full object-cover" />
-            </div>
-          </div>
+      <section className="max-w-6xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
+        <div>
+          <h1 className="text-5xl font-bold text-slate-900 mb-6">Hello, I'm Tomoto</h1>
+          <p className="text-xl text-slate-600 mb-8">
+            PhD in Economics at University of Sussex. Passionate about AI, economic research, and building innovative solutions that bridge technology and economic understanding.
+          </p>
+          <Button className="bg-rose-600 hover:bg-rose-700 text-white px-8 py-3 rounded-lg font-medium transition">
+            Get in Touch
+          </Button>
+        </div>
+        <div className="flex justify-center">
+          <img src={APP_LOGO} alt="Profile" className="w-64 h-64 rounded-full shadow-lg" />
         </div>
       </section>
 
       {/* About Section */}
-      <section id="about" className="max-w-6xl mx-auto px-6 py-20 border-t border-slate-200/50">
+      <section className="max-w-6xl mx-auto px-6 py-20 border-t border-slate-200/50">
         <h2 className="text-4xl font-bold text-slate-900 mb-12">About Me</h2>
-        <div className="grid md:grid-cols-2 gap-12">
+        <div className="grid md:grid-cols-3 gap-8">
           <div>
-            <p className="text-slate-600 mb-6 leading-relaxed">
-              I'm a PhD candidate in Economics at the University of Sussex, combining economic research with cutting-edge AI and web technologies. My projects focus on creating intelligent tools for research, data analysis, and automation.
-            </p>
-            <p className="text-slate-600 leading-relaxed">
-              From AI-powered transcription and translation tools to economic dashboards and research platforms, I'm passionate about leveraging technology to make research more accessible and efficient. My work spans TypeScript, Python, and modern web frameworks.
+            <h3 className="text-lg font-semibold text-slate-900 mb-4">Background</h3>
+            <p className="text-slate-600">
+              I'm a PhD student in Economics at the University of Sussex, focusing on the intersection of AI and economic analysis. My research explores how machine learning can enhance economic forecasting and policy analysis.
             </p>
           </div>
           <div>
-            <h3 className="text-xl font-semibold text-slate-900 mb-6">Skills</h3>
-            <div className="space-y-4">
-              {[
-                { name: "TypeScript", level: 90 },
-                { name: "Python", level: 88 },
-                { name: "React", level: 85 },
-                { name: "AI/LLM Integration", level: 82 },
-              ].map((skill) => (
-                <div key={skill.name}>
-                  <div className="flex justify-between mb-2">
-                    <span className="text-sm font-medium text-slate-900">{skill.name}</span>
-                    <span className="text-sm text-slate-500">{skill.level}%</span>
-                  </div>
-                  <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-rose-400 to-pink-600 rounded-full"
-                      style={{ width: `${skill.level}%` }}
-                    />
-                  </div>
+            <h3 className="text-lg font-semibold text-slate-900 mb-4">Skills</h3>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-slate-700">Python</span>
+                <div className="w-32 h-2 bg-slate-200 rounded-full">
+                  <div className="w-full h-full bg-rose-600 rounded-full"></div>
                 </div>
-              ))}
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-700">TypeScript</span>
+                <div className="w-32 h-2 bg-slate-200 rounded-full">
+                  <div className="w-5/6 h-full bg-rose-600 rounded-full"></div>
+                </div>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-700">Machine Learning</span>
+                <div className="w-32 h-2 bg-slate-200 rounded-full">
+                  <div className="w-5/6 h-full bg-rose-600 rounded-full"></div>
+                </div>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-700">Economics</span>
+                <div className="w-32 h-2 bg-slate-200 rounded-full">
+                  <div className="w-full h-full bg-rose-600 rounded-full"></div>
+                </div>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-700">React</span>
+                <div className="w-32 h-2 bg-slate-200 rounded-full">
+                  <div className="w-4/5 h-full bg-rose-600 rounded-full"></div>
+                </div>
+              </div>
             </div>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-slate-900 mb-4">Education</h3>
+            <p><strong>Education:</strong> PhD in Economics, University of Sussex</p>
           </div>
         </div>
       </section>
@@ -165,35 +174,54 @@ export default function Home() {
               Showing {filteredProjects.length} of {projects.length} projects
             </p>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProjects.map((project) => (
-            <button
-              key={project.name}
-              onClick={() => handleProjectClick(project)}
-              className="group p-6 bg-white rounded-lg border border-slate-200 hover:border-rose-300 hover:shadow-lg transition text-left cursor-pointer w-full flex flex-col h-full"
-            >
-              <div className="flex justify-between items-start mb-3">
-                <h3 className="font-semibold text-slate-900 group-hover:text-rose-600 transition flex-1">{project.name}</h3>
-                <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-rose-600 transition flex-shrink-0 ml-2" />
-              </div>
-              <p className="text-sm text-slate-600 mb-4 line-clamp-3 flex-grow">{project.description}</p>
-              <div className="flex gap-2 mb-3 flex-wrap">
-                <span className="inline-block px-2 py-1 bg-slate-100 text-xs text-slate-600 rounded">{project.language}</span>
-              </div>
-              <div className="flex gap-4 text-xs text-slate-500 pt-3 border-t border-slate-100">
-                <div className="flex items-center gap-1">
-                  <Star className="w-3 h-3" />
-                  <span>{project.stars}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <GitFork className="w-3 h-3" />
-                  <span>{project.forks}</span>
-                </div>
-              </div>
+              {filteredProjects.map((project) => (
+                <button
+                  key={project.name}
+                  onClick={() => handleProjectClick(project)}
+                  className="group p-6 bg-white rounded-lg border border-slate-200 hover:border-rose-300 hover:shadow-lg transition text-left cursor-pointer w-full flex flex-col h-full"
+                >
+                  <h3 className="text-lg font-semibold text-slate-900 mb-2 group-hover:text-rose-600 transition">
+                    {project.name}
+                  </h3>
+                  <p className="text-slate-600 text-sm mb-4 flex-grow">{project.description}</p>
+                  <div className="flex items-center justify-between text-xs text-slate-500 pt-4 border-t border-slate-100">
+                    <span className="px-2 py-1 bg-slate-100 rounded text-slate-700 font-medium">{project.language}</span>
+                    <div className="flex gap-4">
+                      <div className="flex items-center gap-1">
+                        <Star className="w-3 h-3" />
+                        <span>{project.stars}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <GitFork className="w-3 h-3" />
+                        <span>{project.forks}</span>
+                      </div>
+                    </div>
+                  </div>
                 </button>
-            ))};
+              ))}
             </div>
           </>
         )}
+      </section>
+
+      {/* Blog Section */}
+      <section id="blog" className="max-w-6xl mx-auto px-6 py-20 border-t border-slate-200/50">
+        <h2 className="text-4xl font-bold text-slate-900 mb-4">Blog & Insights</h2>
+        <p className="text-slate-600 mb-12">
+          Exploring the intersection of economics, AI, and technology. Sharing insights from research and real-world applications.
+        </p>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {blogPosts.map((post) => (
+            <BlogCard
+              key={post.id}
+              post={post}
+              onClick={(post) => {
+                setSelectedBlogPost(post);
+                setIsBlogModalOpen(true);
+              }}
+            />
+          ))}
+        </div>
       </section>
 
       {/* Contact Section */}
@@ -227,13 +255,23 @@ export default function Home() {
           </div>
           <div className="bg-white p-8 rounded-lg border border-slate-200">
             <h3 className="text-lg font-semibold text-slate-900 mb-4">Get in Touch</h3>
-            <p className="text-slate-600 mb-6">
-              Feel free to contact me via GitHub or visit my personal website for more information.
-            </p>
-            <div className="space-y-3 text-sm text-slate-600">
-              <p><strong>Email:</strong> Available on GitHub profile</p>
-              <p><strong>Location:</strong> Brighton, UK</p>
-              <p><strong>Education:</strong> PhD in Economics, University of Sussex</p>
+            <div className="space-y-4">
+              <a
+                href="mailto:tomoto@example.com"
+                className="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-lg transition"
+              >
+                <Mail className="w-5 h-5 text-rose-600" />
+                <span className="text-slate-700">Email me</span>
+              </a>
+              <a
+                href="https://github.com/tomoto0"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-lg transition"
+              >
+                <Github className="w-5 h-5 text-slate-900" />
+                <span className="text-slate-700">GitHub</span>
+              </a>
             </div>
           </div>
         </div>
@@ -253,6 +291,13 @@ export default function Home() {
           onClose={() => setIsModalOpen(false)}
         />
       )}
+
+      {/* Blog Detail Modal */}
+      <BlogDetailModal
+        post={selectedBlogPost}
+        isOpen={isBlogModalOpen}
+        onClose={() => setIsBlogModalOpen(false)}
+      />
     </div>
   );
 }
