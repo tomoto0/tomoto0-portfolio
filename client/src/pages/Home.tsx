@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Heart, Github, Mail, ExternalLink, Star, GitFork } from "lucide-react";
+import { Heart, Github, Mail, ExternalLink, Star, GitFork, LogOut } from "lucide-react";
 import { useState, useMemo } from "react";
 import { APP_LOGO, APP_TITLE } from "@/const";
 import { projects } from "@/data/projects";
@@ -8,6 +8,9 @@ import ProjectDetailModal from "@/components/ProjectDetailModal";
 import ProjectFilterBar from "@/components/ProjectFilterBar";
 import BlogCard from "@/components/BlogCard";
 import BlogDetailModal from "@/components/BlogDetailModal";
+import AdminLoginModal from "@/components/AdminLoginModal";
+import BlogEditModal from "@/components/BlogEditModal";
+import { useAdmin } from "@/contexts/AdminContext";
 
 interface Project {
   name: string;
@@ -22,12 +25,17 @@ interface Project {
 }
 
 export default function Home() {
+  const { isAdmin, logout } = useAdmin();
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filterKeyword, setFilterKeyword] = useState("");
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [selectedBlogPost, setSelectedBlogPost] = useState<BlogPost | null>(null);
   const [isBlogModalOpen, setIsBlogModalOpen] = useState(false);
+  const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
+  const [isBlogEditOpen, setIsBlogEditOpen] = useState(false);
+  const [editingBlogPost, setEditingBlogPost] = useState<BlogPost | null>(null);
+  const [blogPostsList, setBlogPostsList] = useState<BlogPost[]>(blogPosts);
 
   // ユニークな言語リストを取得
   const uniqueLanguages = useMemo(() => {
@@ -62,6 +70,21 @@ export default function Home() {
     setSelectedLanguages(filters.languages);
   };
 
+  const handleSaveBlogPost = (post: BlogPost) => {
+    const existingIndex = blogPostsList.findIndex((p) => p.id === post.id);
+    if (existingIndex >= 0) {
+      const updated = [...blogPostsList];
+      updated[existingIndex] = post;
+      setBlogPostsList(updated);
+    } else {
+      setBlogPostsList([post, ...blogPostsList]);
+    }
+  };
+
+  const handleDeleteBlogPost = (id: string) => {
+    setBlogPostsList(blogPostsList.filter((p) => p.id !== id));
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
       {/* Navigation */}
@@ -70,16 +93,32 @@ export default function Home() {
           <img src={APP_LOGO} alt={APP_TITLE} className="w-10 h-10 rounded-full" />
           <span className="text-xl font-bold text-slate-900">{APP_TITLE}</span>
         </div>
-        <div className="flex gap-8 text-slate-600">
-          <a href="#projects" className="hover:text-slate-900 transition">
+        <div className="flex gap-8 items-center">
+          <a href="#projects" className="text-slate-600 hover:text-slate-900 transition">
             Projects
           </a>
-          <a href="#blog" className="hover:text-slate-900 transition">
+          <a href="#blog" className="text-slate-600 hover:text-slate-900 transition">
             Blog
           </a>
-          <a href="#contact" className="hover:text-slate-900 transition">
+          <a href="#contact" className="text-slate-600 hover:text-slate-900 transition">
             Contact
           </a>
+          {isAdmin ? (
+            <button
+              onClick={logout}
+              className="flex items-center gap-2 px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-lg transition"
+            >
+              <LogOut className="w-4 h-4" />
+              Logout
+            </button>
+          ) : (
+            <button
+              onClick={() => setIsAdminLoginOpen(true)}
+              className="px-3 py-2 text-sm bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition"
+            >
+              admin
+            </button>
+          )}
         </div>
       </nav>
 
@@ -210,16 +249,41 @@ export default function Home() {
         <p className="text-slate-600 mb-12">
           Exploring the intersection of economics, AI, and technology. Sharing insights from research and real-world applications.
         </p>
+        {isAdmin && (
+          <button
+            onClick={() => {
+              setEditingBlogPost(null);
+              setIsBlogEditOpen(true);
+            }}
+            className="mb-6 px-4 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition"
+          >
+            + New Post
+          </button>
+        )}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {blogPosts.map((post) => (
-            <BlogCard
-              key={post.id}
-              post={post}
-              onClick={(post) => {
-                setSelectedBlogPost(post);
-                setIsBlogModalOpen(true);
-              }}
-            />
+          {blogPostsList.map((post) => (
+            <div key={post.id} className="relative">
+              <BlogCard
+                post={post}
+                onClick={(post) => {
+                  if (isAdmin) {
+                    setEditingBlogPost(post);
+                    setIsBlogEditOpen(true);
+                  } else {
+                    setSelectedBlogPost(post);
+                    setIsBlogModalOpen(true);
+                  }
+                }}
+              />
+              {isAdmin && (
+                <button
+                  onClick={() => handleDeleteBlogPost(post.id)}
+                  className="absolute top-2 right-2 px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition"
+                >
+                  Delete
+                </button>
+              )}
+            </div>
           ))}
         </div>
       </section>
@@ -257,7 +321,7 @@ export default function Home() {
             <h3 className="text-lg font-semibold text-slate-900 mb-4">Get in Touch</h3>
             <div className="space-y-4">
               <a
-                href="mailto:tomoto@example.com"
+                href="mailto:T.Masuda@sussex.ac.uk"
                 className="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-lg transition"
               >
                 <Mail className="w-5 h-5 text-rose-600" />
@@ -298,6 +362,25 @@ export default function Home() {
         isOpen={isBlogModalOpen}
         onClose={() => setIsBlogModalOpen(false)}
       />
+
+      {/* Admin Login Modal */}
+      <AdminLoginModal
+        isOpen={isAdminLoginOpen}
+        onClose={() => setIsAdminLoginOpen(false)}
+      />
+
+      {/* Blog Edit Modal */}
+      {isAdmin && (
+        <BlogEditModal
+          isOpen={isBlogEditOpen}
+          post={editingBlogPost}
+          onClose={() => {
+            setIsBlogEditOpen(false);
+            setEditingBlogPost(null);
+          }}
+          onSave={handleSaveBlogPost}
+        />
+      )}
     </div>
   );
 }
