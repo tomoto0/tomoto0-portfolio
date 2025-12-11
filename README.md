@@ -2,7 +2,7 @@
 
 **デプロイ済みサイト**: https://tomotoai-adgjkydc.manus.space
 
-このリポジトリは、Tomoto Masuda 氏の AI と経済学研究に関するプロジェクトポートフォリオサイトのソースコードです。Manusサーバーにデプロイされており、73 個の公開プロジェクト、ブログセクション、管理者機能を搭載しています。
+このリポジトリは、Tomoto Masuda の AI と経済学研究に関するプロジェクトポートフォリオサイトのソースコードです。Manusサーバーにデプロイされており、73 個の公開プロジェクト、ブログセクション、管理者機能を搭載しています。
 
 ## 📋 目次
 
@@ -18,12 +18,6 @@
 ## 🎯 サイト概要
 
 **Tomoto Masuda - AI & Economics Research Portfolio** は、以下の情報を統合的に提供するプロフェッショナルなポートフォリオウェブサイトです：
-
-- **プロフィール**: Sussex 大学経済学博士課程の研究者
-- **専門分野**: AI、経済学研究、技術と経済の融合
-- **プロジェクト数**: 73 個の公開 GitHub リポジトリ
-- **ブログ**: 経済学と AI に関する知見の共有
-- **連絡先**: T.Masuda@sussex.ac.uk
 
 ## ✨ 主な機能
 
@@ -259,7 +253,6 @@ python3 scripts/update_projects.py
 
 ## 📧 お問い合わせ
 
-- **メール**: T.Masuda@sussex.ac.uk
 - **GitHub**: https://github.com/tomoto0
 - **ポートフォリオサイト**: https://tomotoai-adgjkydc.manus.space
 
